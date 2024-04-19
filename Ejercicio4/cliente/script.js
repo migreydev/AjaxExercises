@@ -6,7 +6,6 @@ const municipio = document.getElementById('municipio');
 
 provincia.addEventListener('click', async() =>{
 
-
     try{
 
         const respuesta = await fetch (url);
@@ -16,16 +15,11 @@ provincia.addEventListener('click', async() =>{
             }
     
         const xml = await respuesta.text();
-    
         const parse = new DOMParser();
-    
         const xmlDoc = parse.parseFromString(xml, 'text/xml');
-    
         const provincias =  xmlDoc.querySelectorAll('provincia');
     
         
-        let arrayProvincia = [];
-    
         provincias.forEach(element => {
             let provinciaObjeto = {
     
@@ -33,13 +27,9 @@ provincia.addEventListener('click', async() =>{
                 nombre: element.querySelector('nombre').textContent,
             }
     
-            arrayProvincia.push(provinciaObjeto);
-    
             const option = document.createElement('option');
-    
             option.value = provinciaObjeto.codigo;
             option.textContent  = provinciaObjeto.nombre;
-    
             provincia.append(option);
     
         });
@@ -50,30 +40,42 @@ provincia.addEventListener('click', async() =>{
 
 })
 
-municipio.addEventListener('click', async() =>{
+provincia.addEventListener('change', async() =>{
 
     try{
 
-        const respuesta = await fetch (urlMunicipio);
-    
+        const idProv = provincia.value;
+
+        const respuesta = await fetch(urlMunicipio, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `provincia=${idProv}`
+        });
+
         if(!respuesta.ok){
             console.error('Error al obtener la respuesta');
         }
 
         const xml = await respuesta.text();
-
         const parse = new DOMParser();
+        const xmlDoc = parse.parseFromString(xml, 'text/xml')
 
-        const xmlDoc = parse.parseFromString(xml, 'text/xml');
-        
         const municipios = xmlDoc.querySelectorAll('municipio');
 
-        municipios.forEach(elemento => {
+        municipios.forEach(element =>{
+            let municipioObjeto = {
+                codigo: element.querySelector('codigo').textContent,
+                nombre: element.querySelector('nombre').textContent,
+            }
 
-            const codigo = elemento.querySelector('codigo').textContent;
-            const nombre = elemento.querySelector('nombre').textContent;
+            const option = document.createElement('option');
+            option.value = municipioObjeto.codigo;
+            option.textContent = municipioObjeto.nombre;
+            municipio.append(option);
         })
-
+    
     }catch (error){
         console.error('Error', error);
     }
