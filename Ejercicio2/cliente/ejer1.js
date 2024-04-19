@@ -32,16 +32,14 @@ button.addEventListener('click', async() =>{
             const alternativas = xmlDoc.querySelector('alternativas');
             const opciones = alternativas.querySelectorAll('login');
             const ul = document.createElement('ul');
-        
 
             opciones.forEach(element => {
                 const li = document.createElement('li');
 
                 li.innerText = `${usuario}${element.textContent}`;
-                console.log(li);
+
                 ul.append(li);
             });
-            
 
             form.append(ul);
         }
